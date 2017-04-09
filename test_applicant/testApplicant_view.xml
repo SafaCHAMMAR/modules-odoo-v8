@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record id="testApplicant_id"  model="ir.ui.view">
+			<field name="name">test.Applicant</field>
+			<field name="model">test_applicant.test_applicant</field>
+			<field name="inherit_id" ref="hr_recruitment.crm_case_form_view_job" />  <!--"hr_recruitment.crm_case_form_view_job" />-->
+            <field name="arch" type="xml">
+                <field name="job_id" position="before">
+                    <field name="att" string="attribut"/>
+                    <field name="candidate_id" />
+                </field>
+            </field>
+		</record>
+		<record id="testApplicant_action_id" model="ir.actions.act_window">
+            <field name="name">Applicant </field>
+            <field name="res_model">test_applicant.test_applicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+
+	</record>
+	<menuitem id="menu_testApplicant" name="testApplicant" sequence="2" action="testApplicant_action_id"/>
+	</data>
+</openerp>
+
+
