@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="testCandidat_id" model="ir.ui.view">
+			<field name="name">test.candidat.form</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml"> 
+			    <field name="email" position="after">     
+			     <field name="candidat" />
+			    <!-- <field name="applicant" />-->
+			    </field> 
+		    </field>
+		</record>
+	<!--	<record id="testCandidat_action_id" model="ir.actions.act_window">
+            <field name="name">Candidat </field>
+            <field name="res_model">test_candidat.test_candidat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+	</record>
+	<menuitem id="menu_testCandidat" name="testCandidat" sequence="2" action="testCandidat_action_id"/>-->
+	</data>
+</openerp>
