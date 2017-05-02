@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- <template id="listing"> -->
+        <!--   <ul> -->
+        <!--     <li t-foreach="objects" t-as="object"> -->
+        <!--       <a t-attf-href="#{ root }/objects/#{ object.id }"> -->
+        <!--         <t t-esc="object.display_name"/> -->
+        <!--       </a> -->
+        <!--     </li> -->
+        <!--   </ul> -->
+        <!-- </template> -->
+        <!-- <template id="object"> -->
+        <!--   <h1><t t-esc="object.display_name"/></h1> -->
+        <!--   <dl> -->
+        <!--     <t t-foreach="object._fields" t-as="field"> -->
+        <!--       <dt><t t-esc="field"/></dt> -->
+        <!--       <dd><t t-esc="object[field]"/></dd> -->
+        <!--     </t> -->
+        <!--   </dl> -->
+        <!-- </template> -->
+        <template id="timer_id" inherit_id="survey.survey">
+        	<!--<xpath expr="//p[@class='pull-right']" position="after"> t-raw="survey.time"-->
+        		<xpath expr="//div[@groups='base.group_website_publisher']" position="after">
+        		<p name="ptest" value="vtest"  id="idtest" />
+        		<div style="height:5px"><h2 id="counter" t-att-data-timer="survey.time" /></div>
+        	</xpath>
+        	
+        </template>
+        <template id="assets_frontend2" inherit_id="website.assets_frontend" name="Timer assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/timer/static/src/js/timer.js" />
+            <script type="text/javascript" src="/timer/static/src/js/js-cookie-master/src/js.cookie.js"/>
+            <script type="text/javascript" src="/timer/static/src/js/jquery-cookie-master/src/jquery.cookie.js" />
+        </xpath>
+    </template>
+        
+
+
+
+    </data>
+</openerp>

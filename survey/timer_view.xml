@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="timer_view_id" model="ir.ui.view">
+			<field name="name">timer.view.form</field>
+			<field name="model">survey.survey</field>
+			<field name="inherit_id" ref="survey.survey_form" />
+			<field name="arch" type="xml">
+				<field name="title" position="after">
+					<label for="time"/>
+					<field name="time" />
+				</field>
+			</field>
+		</record>
+		<!--<record model="ir.ui.view" id="time_elapsed_id">
+		 <field name="name">timeElapsed.view.form</field>
+			<field name="model">survey.user_input_line</field>
+			<field name="inherit_id" ref="survey.survey_user_input_line" />
+			<field name="arch" type="xml">
+				<field name="quizz_mark" position="after">
+					<field name="time_elapsed" />
+				</field>
+			</field>
+		</record>-->
+		<record model="ir.ui.view" id="time_elapsed_tree_id">
+		 <field name="name">timeElapsed.view.tree</field>
+			<field name="model">survey.user_input</field>
+			<field name="inherit_id" ref="survey.survey_user_input_tree" />
+			<field name="arch" type="xml">
+				<field name="quizz_score" position="after">
+					<field name="time_elapsed" />
+				</field>
+			</field>
+		</record>
+
+	</data>
+</openerp>
