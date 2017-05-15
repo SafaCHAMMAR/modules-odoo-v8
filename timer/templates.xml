@@ -23,7 +23,10 @@
         	<!--<xpath expr="//p[@class='pull-right']" position="after"> t-raw="survey.time"-->
         		<xpath expr="//div[@groups='base.group_website_publisher']" position="after">
         		<p name="ptest" value="vtest"  id="idtest" />
-        		<div style="height:5px"><h2 id="counter" t-att-data-timer="survey.time" /></div>
+        		<div style="height:5px">
+                    <h2 id="counter" t-att-data-timer="survey.time" />
+                </div>
+                <p id="t1" t-att-data-timeElapsed="survey.t1" style="display:none;" />
         	</xpath>
         	
         </template>

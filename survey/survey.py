@@ -126,6 +126,7 @@ class survey_survey(osv.Model):
 
     def _get_public_url(self, cr, uid, ids, name, arg, context=None):
         """ Computes a public URL for the survey """
+        _logger.critical('\n\n survey.py ')
         if context and context.get('relative_url'):
             base_url = '/'
         else:
@@ -441,6 +442,8 @@ class survey_survey(osv.Model):
 
         survey_browse = self.pool.get('survey.survey').browse(cr, uid, ids,
             context=context)[0]
+        _logger.critical('\n\n +++++++++++++survey.browse+++++++++++++%s\n\n',survey_browse)
+
         if survey_browse.stage_id.closed:
             raise osv.except_osv(_('Warning!'),
                 _("You cannot send invitations for closed surveys."))
@@ -452,7 +455,7 @@ class survey_survey(osv.Model):
                                 'survey', 'email_template_survey')
         template_id = templates[1] if len(templates) > 0 else False
         ctx = dict(context)
-
+        _logger.critical('\n\n ++++++++++++++++template_id+++++++++++%s \n \n',template_id)
         ctx.update({'default_model': 'survey.survey',
                     'default_res_id': ids[0],
                     'default_survey_id': ids[0],

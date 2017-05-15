@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
@@ -23,8 +22,3 @@
 import survey
 import controllers
 import wizard
-=======
-# -*- coding: utf-8 -*-
-import controllers
-import models
->>>>>>> 7a13e6b300f76f484a3ae50c394cde16a19b2da4

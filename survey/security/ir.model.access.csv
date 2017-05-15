@@ -1,5 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-<<<<<<< HEAD
 access_survey_public,survey.survey public,model_survey_survey,,1,0,0,0
 access_survey_page_public,survey.page public,model_survey_page,,1,0,0,0
 access_survey_question_public,survey.question public,model_survey_question,,1,0,0,0
@@ -21,6 +20,3 @@ access_survey_label_manager,survey.label manager,model_survey_label,base.group_s
 access_survey_user_input_manager,survey.user_input manager,model_survey_user_input,base.group_survey_manager,1,1,1,1
 access_survey_user_input_line_manager,survey.user_input_line manager,model_survey_user_input_line,base.group_survey_manager,1,1,1,1
 access_survey_stage_manager,survey.stage manager,model_survey_stage,base.group_survey_manager,1,1,1,1
-=======
-access_timer_timer,timer.timer,model_timer_timer,,1,0,0,0
->>>>>>> 7a13e6b300f76f484a3ae50c394cde16a19b2da4

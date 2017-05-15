@@ -24,7 +24,6 @@
 $(document).ready(function () {
     'use strict';
 
-
     console.debug("[survey] Custom JS for survey is loading...");
 
     var the_form = $('.js_surveyform');
@@ -124,14 +123,12 @@ $(document).ready(function () {
             return score_def;
         }
     }
-    /*var test=$('#testData').val()
-    console.log("testData = "+test)*/
+
     // Parameters for form submission
     $('.js_surveyform').ajaxForm({
         url: submit_controller,
         type: 'POST',                       // submission type
-        dataType: 'json', 
-        /*data:{"testData":test},*/                // answer expected type
+        dataType: 'json',                   // answer expected type
         beforeSubmit: function(){           // hide previous errmsg before resubmitting
             $('.js_errzone').html("").hide();
         },

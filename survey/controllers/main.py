@@ -78,10 +78,12 @@ class WebsiteSurvey(http.Controller):
                  '/survey/start/<model("survey.survey"):survey>/<string:token>'],
                 type='http', auth='public', website=True)
     def start_survey(self, survey, token=None, **post):
+        #_logger.critical("\n\n &&&&&&&&&&&&&&&&&&&&&&&&&& Start Survey&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n\n")
+        #_logger.critical("\n\n        post  %s \n\n\n",post)
         cr, uid, context = request.cr, request.uid, request.context
         survey_obj = request.registry['survey.survey']
         user_input_obj = request.registry['survey.user_input']
-
+        
         # Test mode
         _logger.critical("\n \n \n ++++++++++++++++++++++++++++ start survey +++++++++++++++++++++++++++++++++\n \n ")
         if token and token == "phantom":
@@ -89,6 +91,12 @@ class WebsiteSurvey(http.Controller):
             user_input_id = user_input_obj.create(cr, uid, {'survey_id': survey.id, 'test_entry': True}, context=context)
             user_input = user_input_obj.browse(cr, uid, [user_input_id], context=context)[0]
             data = {'survey': survey, 'page': None, 'token': user_input.token}
+            _logger.critical("\n\n affichage dans start de survey_user_input.state   [1]  ----- %s\n\n",user_input.state)
+            """if(user_input.state=='done'):
+                return request.website.render('survey.sfinished', {'survey': survey,
+                                                               'token': token,
+                                                               'user_input': user_input})
+            else:"""
             return request.website.render('survey.survey_init', data)
         # END Test mode
 
@@ -104,24 +112,43 @@ class WebsiteSurvey(http.Controller):
                 vals['partner_id'] = request.registry['res.users'].browse(cr, uid, uid, context=context).partner_id.id
             user_input_id = user_input_obj.create(cr, uid, vals, context=context)
             user_input = user_input_obj.browse(cr, uid, [user_input_id], context=context)[0]
+            #_logger.critical("\n\n affichage dans start de survey_user_input.state [2]----- %s\n\n",user_input.state)
+            """if(user_input.state=='done'):
+                return request.website.render('survey.sfinished', {'survey': survey,
+                                                               'token': token,
+                                                               'user_input': user_input})"""
+            
         else:
             try:
                 user_input_id = user_input_obj.search(cr, SUPERUSER_ID, [('token', '=', token)], context=context)[0]
+                
             except IndexError:  # Invalid token
                 return request.website.render("website.403")
             else:
                 user_input = user_input_obj.browse(cr, SUPERUSER_ID, [user_input_id], context=context)[0]
-
+                #_logger.critical("\n\n affichage dans start de survey_user_input.state[3]----- %s\n\n",user_input.state)
+                """if(user_input.state=='done'):
+                    return request.website.render('survey.sfinished', {'survey': survey,
+                                                               'token': token,
+                                                               'user_input': user_input})"""
         # Do not open expired survey
         errpage = self._check_deadline(cr, uid, user_input, context=context)
         if errpage:
             return errpage
-
+        #_logger.critical("\n\n affichage dans start de survey_user_input.state   GLOBAL----- %s\n\n",user_input.state)
         # Select the right page
         if user_input.state == 'new':  # Intro page
+            #_logger.critical("\n \n!!!!!!!!!!!!!!!!!!! redirect to survey.init !!!!!!!!!!!!!!! \n\n")
             data = {'survey': survey, 'page': None, 'token': user_input.token}
             return request.website.render('survey.survey_init', data)
+            """elif user_input.state=='done':
+                _logger.critical("\n\n ***************DANS START STATE=DONE!!!!!!*****************\n\n")
+                return request.website.render('survey.sfinished', {'survey': survey,
+                                                               'token': token,
+                                                               'user_input': user_input})"""
         else:
+            #_logger.critical('\n\n pfffffffffffffffffff\n\n')
+            #_logger.critical('\n\n a3333333  state %s\n\n',user_input.state)
             return request.redirect('/survey/fill/%s/%s' % (survey.id, user_input.token))
 
     # Survey displaying
@@ -130,10 +157,12 @@ class WebsiteSurvey(http.Controller):
                 type='http', auth='public', website=True)
     def fill_survey(self, survey, token, prev=None, **post):
         '''Display and validates a survey'''
+        #_logger.critical("\n\n ------------- token inf fill/...---------%s \n\n",token)
+        #_logger.critical("\n\n ************** fill****************\n\n")
         cr, uid, context = request.cr, request.uid, request.context
         survey_obj = request.registry['survey.survey']
         user_input_obj = request.registry['survey.user_input']
-        _logger.critical('\n \n ----token--------%s \n\n',token)
+        #_logger.critical('\n \n ----token--------%s \n\n',token)
         # Controls if the survey can be displayed
         errpage = self._check_bad_cases(cr, uid, request, survey_obj, survey, user_input_obj, context=context)
         if errpage:
@@ -142,11 +171,12 @@ class WebsiteSurvey(http.Controller):
         # Load the user_input
         try:
             user_input_id = user_input_obj.search(cr, SUPERUSER_ID, [('token', '=', token)])[0]
+            #_logger.critical("\n\n___________ bloc try______\n" )
         except IndexError:  # Invalid token
             return request.website.render("website.403")
         else:
             user_input = user_input_obj.browse(cr, SUPERUSER_ID, [user_input_id], context=context)[0]
-
+            #_logger.critical("\n\n ________after try ________________\n\n")
         # Do not display expired survey (even if some pages have already been
         # displayed -- There's a time for everything!)
         errpage = self._check_deadline(cr, uid, user_input, context=context)
@@ -155,16 +185,23 @@ class WebsiteSurvey(http.Controller):
 
         # Select the right page
         if user_input.state == 'new':  # First page
+            #_logger.critical("\n ________________state=new________\n")
             page, page_nr, last = survey_obj.next_page(cr, uid, user_input, 0, go_back=False, context=context)
             data = {'survey': survey, 'page': page, 'page_nr': page_nr, 'token': user_input.token}
             if last:
                 data.update({'last': True})
             return request.website.render('survey.survey', data)
         elif user_input.state == 'done':  # Display success message
+            #ici!!!!! request redirect to another url !!!!
+            #_logger.critical("\n________________state= done__________\n")
+            #return request.redirect('/survey/start/%s/%s' % (survey.id, user_input.token))
             return request.website.render('survey.sfinished', {'survey': survey,
                                                                'token': token,
-                                                               'user_input': user_input})
+                                                             'user_input': user_input})
+            #_logger.critical('\n\n hellooooooooooooooooooooo  \n\n\n')
+            #return request.redirect('/survey/thankyou')
         elif user_input.state == 'skip':
+            #_logger.critical("\n__________________state=skip________________\n")
             flag = (True if prev and prev == 'prev' else False)
             page, page_nr, last = survey_obj.next_page(cr, uid, user_input, user_input.last_displayed_page_id.id, go_back=flag, context=context)
 
@@ -178,6 +215,7 @@ class WebsiteSurvey(http.Controller):
             return request.website.render('survey.survey', data)
         else:
             return request.website.render("website.403")
+
 
     # AJAX prefilling of a survey
     @http.route(['/survey/prefill/<model("survey.survey"):survey>/<string:token>',
@@ -246,12 +284,13 @@ class WebsiteSurvey(http.Controller):
                 type='http', methods=['POST'], auth='public', website=True)
     def submit(self, survey, **post):
         _logger.debug('Incoming data: %s', post)
-        _logger.critical('\n \n incoming data: %s',post,'\n \n')
+        _logger.critical('\n \n submit dans main survey \n \n')
+        #_logger.critical('\n \n incoming data: %s',post,'\n \n')
         # add by safa:Don't forget to delete this line!!!!
-        _logger.critical('\n \n ################################### post[testData]%s \n \n', post["testData"])
+        #_logger.critical('\n \n ################################### post[testData]%s \n \n', post["testData"])
         timeElapsed=post["testData"]
         time2=int(timeElapsed)/60 +(float(timeElapsed)%60)/100
-        _logger.critical('\n \n //////////////////////// time2 %s \n \n', time2)
+        #_logger.critical('\n \n //////////////////////// time2 %s \n \n', time2)
         #####################
 
 
@@ -287,9 +326,10 @@ class WebsiteSurvey(http.Controller):
                 user_input_line_obj.save_lines(cr, user_id, user_input_id, question, post, answer_tag, context=context)
 
             ######################################################    
-            _logger.critical('\n \n ***************user_input.id %s \n \n',user_input.id)
+            #_logger.critical('\n \n ***************user_input.id %s \n \n',user_input.id)
             cr.execute('update survey_user_input set time_elapsed=%s where id=%s'% (time2, user_input.id))
-            _logger.critical('\n \n ----------succes------------- \n \n')
+            #cr.execute('update survey_survey set t1=%s where id=%s'% (time2,user_input.survey_id))
+            #_logger.critical('\n \n ----------succes------------- \n \n')
             #_logger.critical('post[button_submit]='+post['button_submit'])
             ######################################################
             
@@ -305,13 +345,17 @@ class WebsiteSurvey(http.Controller):
             if go_back:
                 ret['redirect'] += '/prev'
             if time2<0:
-                #vals.update({'state': 'done'})
-                cr.execute('update survey_user_input set time_elapsed=%s where id=%s'% (0.0, user_input.id))
-                _logger.critical('\n\n ---------- redirect time2---------------')
-                _logger.critical(' \n -------- json.dumps(ret)---------%s \n\n ',json.dumps(ret))
-                _logger.critical('----------user_input.state= %s \n',user_input.state)
-                #return request.website.render('survey.sfinished', {'survey': survey,'user_input': user_input})
+            	#vals.update({'state': 'done'})
+            	cr.execute('update survey_user_input set time_elapsed=%s where id=%s'% (0.0, user_input.id))
+                #cr.execute('update survey_survey set t1=%s where id=%s'%(0.0,user_input.survey_id))
+            	#_logger.critical('\n\n ---------- redirect time2---------------')
+            	#_logger.critical(' \n -------- json.dumps(ret)---------%s \n\n ',json.dumps(ret))
+            	#_logger.critical('----------user_input.state= %s \n',user_input.state)
+            	#return request.website.render('survey.sfinished', {'survey': survey,'user_input': user_input})
+        #_logger.critical(' \n -------- json.dumps(ret)---------%s \n\n ',json.dumps(ret))
+        #_logger.critical(' \n *********** vals[state]************%s \n\n ',vals['state'])
 
+        ret['state']=vals['state']
         return json.dumps(ret)
 
     # Printing routes
@@ -336,7 +380,7 @@ class WebsiteSurvey(http.Controller):
         current_filters = []
         filter_display_data = []
         filter_finish = False
-        _logger.critical("------------------------------")
+        #_logger.critical("------------------------------")
         survey_obj = request.registry['survey.survey']
         if not survey.user_input_ids or not [input_id.id for input_id in survey.user_input_ids if input_id.state != 'new']:
             result_template = 'survey.no_result'
